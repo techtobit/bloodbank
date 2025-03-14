@@ -10,7 +10,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
 
-
+AUTH_USER_MODEL = 'Users.UsersModel'
 # Application definition
 
 INSTALLED_APPS = [
@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     'example',
     'rest_framework',
     "corsheaders",
-    'users',
+    'Users',
 ]
 
 MIDDLEWARE = [
