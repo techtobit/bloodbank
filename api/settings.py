@@ -19,7 +19,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://bloodbankbd.vercel.app",
     "http://localhost:8080",
-    "http://127.0.0.1:9000",
+    "http://127.0.0.1:8000",
 ]
 AUTH_USER_MODEL = 'Users.UsersModel'
 # Application definition
