@@ -13,6 +13,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user=User.objects.create_user(
             phoneNumber=validated_data['phoneNumber'],
-            password=validated_data['password']
+            password=validated_data['password'],
+            full_name=validated_data['full_name'],
+            blood_group=validated_data['blood_group'],
+            division=validated_data['division'],
+            district=validated_data['district'],
+            upazila=validated_data['upazila'],
         )
         return user
