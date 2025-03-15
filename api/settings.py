@@ -13,8 +13,14 @@ SECRET_KEY = 'django-insecure-=cldztbc4jg&xl0!x673!*v2_=p$$eu)=7*f#d0#zs$44xx-h^
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.vercel.app']
-
+ALLOWED_HOSTS = ['*', '.vercel.app']
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://bloodbankbd.vercel.app",
+    "http://localhost:8080",
+    "http://127.0.0.1:9000",
+]
 AUTH_USER_MODEL = 'Users.UsersModel'
 # Application definition
 
