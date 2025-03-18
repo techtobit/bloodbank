@@ -9,6 +9,7 @@ class CustomUserManager(BaseUserManager):
         user=self.model(phone_number=phone_number, full_name=full_name, blood_group=blood_group, division=division, district=district, upazila=upazila, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
+        print("get_phone_number", user)
         return user
     
     def create_superuser(self, phone_number, full_name, blood_group, division, district, upazila, password=None, **extra_fields):
@@ -35,11 +36,3 @@ class UsersModel(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return f"{self.phone_number}"
-
-# class UserProfiles(models.Model):
-#     user = models.OneToOneField(UsersModel, on_delete=models.CASCADE)
-#     full_name = models.CharField(max_length=50)
-#     blood_group = models.CharField(max_length=50)
-#     division = models.CharField(max_length=100)
-#     district = models.CharField(max_length=100)
-#     upazila = models.CharField(max_length=100)
