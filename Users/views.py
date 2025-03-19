@@ -9,6 +9,7 @@ from rest_framework import authentication, permissions
 from Users.serializer import RegisterSerializer, DonarListSerializer, DonarProfileSerializer
 from rest_framework import mixins
 from rest_framework import generics
+from rest_framework import authentication, permissions
 
 User=get_user_model()
 
@@ -57,6 +58,8 @@ class DonarProfileView(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
                     mixins.DestroyModelMixin,
                     generics.GenericAPIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = DonarProfileSerializer
 

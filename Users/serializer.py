@@ -24,6 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class DonarListSerializer(serializers.ModelSerializer):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     password=serializers.CharField(write_only=True)
     is_staff=serializers.CharField(write_only=True)
     is_superuser=serializers.CharField(write_only=True)
@@ -36,7 +37,7 @@ class DonarListSerializer(serializers.ModelSerializer):
         return usersList
     
 class DonarProfileSerializer(serializers.ModelSerializer):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     class Meta:
         model=User
         # fields="__all__"
