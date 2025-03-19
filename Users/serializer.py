@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework.validators import UniqueValidator
 User=get_user_model()
+from rest_framework import authentication, permissions
 
 class RegisterSerializer(serializers.ModelSerializer):
     password=serializers.CharField(write_only=True)
@@ -29,7 +30,14 @@ class DonarListSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
         fields="__all__"
-        # fields=['phone_number', 'full_name', 'blood_group', 'division', 'district', 'upazila']
     def get(self, request):
-        userList=serializers( many=False, queryset=User.objects.all())
-        return userList
+        usersList=serializers( many=False, queryset=User.objects.all())
+        return usersList
+    
+class DonarProfileSerializer(serializers.ModelSerializer):
+    permission_classes = [permissions.AllowAny]
+    class Meta:
+        model=User
+        # fields="__all__"
+        exclude = ['password', 'is_staff', 'is_superuser', 'user_permissions', 'groups']  
+
