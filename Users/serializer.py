@@ -18,7 +18,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             blood_group=validated_data['blood_group'],
             division=validated_data['division'],
             district=validated_data['district'],
-            upazila=validated_data['upazila'],
+            upazila=validated_data['upazila']
+
         )
         return user
 
