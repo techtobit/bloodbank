@@ -1,12 +1,11 @@
 from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
-from django.http import HttpResponse, JsonResponse
-from django.http import Http404
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from rest_framework import authentication, permissions
-from Users.serializer import RegisterSerializer, DonarListSerializer, DonarProfileSerializer
+from Users.serializer import RegisterSerializer, DonarListSerializer, DonarProfileSerializer, FeedbackSerializer, ReportSerializer
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import authentication, permissions
@@ -22,37 +21,12 @@ class RegisterView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class DonarListView(APIView):
-    # uthentication_classes = [authentication.TokenAuthentication]
-    # permission_classes = [permissions.AllowAny]
-    def get(self, request, format=None):
-            users = User.objects.all()
-            serializer= DonarListSerializer(users, many=True)
-            return Response(serializer.data)
-        
-# class DonarProfileView(APIView):
-#     # uthentication_classes = [authentication.TokenAuthentication]
-#     # permission_classes = [permissions.AllowAny]
-#     def get_object(self, pk):
-#         try:
-#             return User.objects.get(pk=pk)
-#         except User.DoesNotExist:
-#             raise Http404
-#     def get(self, request, pk, format=None):
-#             user =self.get_object(pk=pk)
-#             serializer= DonarProfileSerializer(user, many=False)
-#             return Response(serializer.data)
-#     def put(self, request, pk, format=None):
-#         user =self.get_object(pk=pk)
-#         serializer= DonarProfileSerializer(user, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-#     def delete(self, pk):
-#         user =self.get_object(pk=pk)
-#         user.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+class DonarListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = DonarListSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['division', 'district', 'upazila', 'blood_group']
     
 class DonarProfileView(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
@@ -73,5 +47,21 @@ class DonarProfileView(mixins.RetrieveModelMixin,
         return self.destroy(request, *args, **kwargs)
 
 
+class FeedbackView(APIView):
+    def post(self, request):
+        serializer=FeedbackSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'প্রতিক্রিয়া দেওয়া হয়েছে'}, status=status.HTTP_201_CREATED)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ReportView(APIView):
+    def post(self, request):
+        serializer=ReportSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'রিপোর্ট করা হয়েছে'}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

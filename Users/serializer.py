@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from rest_framework.validators import UniqueValidator
 User=get_user_model()
-from rest_framework import authentication, permissions
+from rest_framework import permissions
+from .models import Feedback, Report
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password=serializers.CharField(write_only=True)
@@ -25,21 +26,23 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class DonarListSerializer(serializers.ModelSerializer):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    password=serializers.CharField(write_only=True)
-    is_staff=serializers.CharField(write_only=True)
-    is_superuser=serializers.CharField(write_only=True)
-    user_permissions=serializers.CharField(write_only=True)
     class Meta:
         model=User
-        fields="__all__"
-    def get(self, request):
-        usersList=serializers( many=False, queryset=User.objects.all())
-        return usersList
-    
+        exclude = ['password', 'is_staff', 'is_superuser', 'user_permissions', 'groups']  
+
 class DonarProfileSerializer(serializers.ModelSerializer):
     permission_classes = [permissions.IsAuthenticated]
     class Meta:
         model=User
-        # fields="__all__"
         exclude = ['password', 'is_staff', 'is_superuser', 'user_permissions', 'groups']  
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Feedback
+        fields="__all__"
+
+class ReportSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model=Report
+        fields="__all__"
 
