@@ -5,11 +5,12 @@ from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from rest_framework import authentication, permissions
-from Users.serializer import RegisterSerializer, DonarListSerializer, DonarProfileSerializer, FeedbackSerializer, ReportSerializer
+from Users.serializer import RegisterSerializer, LoginSerializer, DonarListSerializer, DonarProfileSerializer, FeedbackSerializer, ReportSerializer
 from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import authentication, permissions
-
+from django.contrib.auth import authenticate, login
+from rest_framework.authtoken.models import Token
 User=get_user_model()
 
 class RegisterView(APIView):
@@ -20,7 +21,26 @@ class RegisterView(APIView):
             return Response({'message': 'একউন্ট তৈরি হয়েছে'}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data = self.request.data)
+        if serializer.is_valid():
+            phone_number = serializer.validated_data['phone_number']
+            password = serializer.validated_data['password']
+            check_user = User.objects.filter(phone_number=phone_number).exists()
+            if not check_user:
+                return Response({'error' : "উক্ত নাম্বারটি দ্বারা একাউন্ট তৈরি হয়নি !"},  status=status.HTTP_404_NOT_FOUND)
+            user = authenticate(phone_number= phone_number, password=password)
+            if user:
+                token, _ = Token.objects.get_or_create(user=user)
+                print(token)
+                print(_)
+                login(request, user)
+                return Response({'token' : token.key, 'user_id' : user.id})
+            else:
+                return Response({'error' : "পাসওয়ার্ড সঠিক নয়, লগইন ব্যর্থ হয়েছে !"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors)
 class DonarListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = DonarListSerializer

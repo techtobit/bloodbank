@@ -24,6 +24,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         return user
 
+class LoginSerializer(serializers.Serializer):
+    phone_number=serializers.CharField(required=True)
+    password=serializers.CharField(required=True)
+    
 class DonarListSerializer(serializers.ModelSerializer):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     class Meta:

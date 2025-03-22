@@ -29,7 +29,7 @@ class UsersModel(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser= models.BooleanField(default=False)
-    # created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     
     objects=CustomUserManager()
     
@@ -43,13 +43,12 @@ class Feedback(models.Model):
     feedbacker_name=models.CharField(max_length=50)
     feedback_subject=models.CharField(max_length=50)
     feedback_details=models.CharField(max_length=350)
-    # created_at=models.DateField(auto_now_add=True)
+    created_at=models.DateField(auto_now_add=True)
 
 class Report(models.Model):
-    report_to_donar=models.BooleanField(default=False)
-    report_to_seeker=models.BooleanField(default=False)
+    report_to_donar=models.BooleanField(default=False, blank=True)
+    report_to_seeker=models.BooleanField(default=False, blank=True)
     own_phone_number=models.CharField(max_length=11, unique=True)
     reporting_phone_number=models.CharField(max_length=11)
-    report_subject=models.CharField(max_length=50)
     reporting_details=models.CharField(max_length=350)
-    # created_at=models.DateField(auto_now_add=True)
+    created_at=models.DateField(auto_now_add=True)
