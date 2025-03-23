@@ -22,6 +22,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8000",
 ]
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_HTTPONLY = True  # So frontend can read it
+CSRF_COOKIE_SAMESITE = 'Strict'  # Prevent cross-site attacks
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://bloodbankbd.vercel.app",
+    "http://localhost:8080",
+]
+
 AUTH_USER_MODEL = 'Users.UsersModel'
 # Application definition
 

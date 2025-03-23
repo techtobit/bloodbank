@@ -12,6 +12,7 @@ from rest_framework import authentication, permissions
 from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
 User=get_user_model()
+from django.middleware.csrf import get_token
 
 class RegisterView(APIView):
     def post(self, request):
@@ -34,13 +35,16 @@ class LoginView(APIView):
             user = authenticate(phone_number= phone_number, password=password)
             if user:
                 token, _ = Token.objects.get_or_create(user=user)
-                print(token)
-                print(_)
                 login(request, user)
-                return Response({'token' : token.key, 'user_id' : user.id})
+                response=Response({'token' : token.key, 'user_id' : user.id})
+                # response.set_cookie('token', token.key, httponly=True, samesite='Strict', max_age=500000)
+                response.csrf_cookie_set = True
+                return response
             else:
                 return Response({'error' : "পাসওয়ার্ড সঠিক নয়, লগইন ব্যর্থ হয়েছে !"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors)
+    
+
 class DonarListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = DonarListSerializer
